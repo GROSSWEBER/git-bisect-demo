@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+git bisect start HEAD good
+git bisect run ./build
