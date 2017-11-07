@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+
+# In this script, do whatever you do to build and test your project.
+
+assert() {
+  if $@; then
+    printf '  %s  %b%s%b\n' '🍻' '\e[1;32m' "$*" '\e[0m'
+    return 0
+  fi
+
+  printf '  %s  %b%s%b\n' '💩' '\e[1;31m' "$*" '\e[0m'
+  return 1
+}
+
+smoke-test() {
+  printf '%s\n' "${FUNCNAME[0]}"
+  assert test 1 = 1
+}
+
+# Call all *-test functions.
+any_failed=0
+for test in $(compgen -A function); do
+  if [[ "$test" != *-test ]]; then
+    continue
+  fi
+
+  $test
+
+  # Sum up exit codes.
+  any_failed=$((any_failed + $?))
+done
+
+if [[ "$any_failed" -eq 0 ]]; then
+  printf '\n%s  The build was %bsuccessful%b\n' '🍺' '\e[1;32m' '\e[0m'
+  exit 0
+else
+  printf '\n%s  The build has %bfailed%b\n' '💩' '\e[1;31m' '\e[0m'
+  exit 1
+fi
