@@ -37,6 +37,13 @@ divides-operands-test() {
   assert test $? = 20
 }
 
+multiplies-operands-test() {
+  printf '%s\n' "${FUNCNAME[0]}"
+  source ./calculator
+  multiply 40 2
+  assert test $? = 80
+}
+
 # Call all *-test functions.
 any_failed=0
 for test in $(compgen -A function); do
