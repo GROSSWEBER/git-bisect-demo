@@ -11,3 +11,10 @@ subtract() {
 
   return $((left - right))
 }
+
+divide() {
+  local left="$1"
+  local right="$2"
+
+  return $((left / right))
+}
