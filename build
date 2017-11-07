@@ -2,6 +2,13 @@
 
 # In this script, do whatever you do to build and test your project.
 
+adds-operands-reproduction-test() {
+  printf '%s\n' "${FUNCNAME[0]}"
+  source ./calculator
+  add 40 2
+  assert test $? = 42
+}
+
 assert() {
   if $@; then
     printf '  %s  %b%s%b\n' '🍻' '\e[1;32m' "$*" '\e[0m'

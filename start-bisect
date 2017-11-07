@@ -1,0 +1,44 @@
+#!/usr/bin/env bash
+
+bisect_helper=/tmp/git-bisect-helper
+
+cat << 'EOS' > "$bisect_helper"
+#!/usr/bin/env bash
+
+# Cherry-pick the reproduction for the bug (last commit on the retrofit branch).
+if ! git cherry-pick retrofit 2>&1 > /dev/null; then
+  printf 'Cherry-pick failed for %s\n' "$(git log --oneline -1 HEAD)"
+
+  # Undo the failed cherry-pick.
+  git reset --hard HEAD 2>&1 > /dev/null
+
+  # Exit code 125 is used if the current commit cannot be tested.
+  exit 125
+fi
+
+# HEAD~: Omit the cherry-picked reproduction.
+printf '❓ Building %s...\n' "$(git log --oneline -1 HEAD~)"
+
+if ./build; then # 2>&1 > /dev/null; then
+  exit_code=$?
+  symbol=🍻
+  color='\e[1;32m'
+else
+  exit_code=$?
+  symbol=💩
+  color='\e[1;31m'
+fi
+
+printf '%s  %bexit code: %s%b\n' "$symbol" "$color" "$exit_code" '\e[0m'
+
+# Undo the cherry-picked commit that added the reproduction to the
+# current bisect HEAD.
+git reset --hard HEAD~ 2>&1 > /dev/null
+
+exit $exit_code
+EOS
+
+chmod +x "$bisect_helper"
+
+git bisect start HEAD good
+git bisect run "$bisect_helper"
