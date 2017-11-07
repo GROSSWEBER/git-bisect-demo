@@ -17,6 +17,12 @@ smoke-test() {
   assert test 1 = 1
 }
 
+loads-calculator-test() {
+  printf '%s\n' "${FUNCNAME[0]}"
+  source ./calculator
+  assert test $? = 0
+}
+
 # Call all *-test functions.
 any_failed=0
 for test in $(compgen -A function); do
