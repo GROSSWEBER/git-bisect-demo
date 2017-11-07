@@ -30,6 +30,13 @@ adds-operands-test() {
   assert test $? = 42
 }
 
+subtracts-operands-test() {
+  printf '%s\n' "${FUNCNAME[0]}"
+  source ./calculator
+  subtract 40 2
+  assert test $? = 38
+}
+
 # Call all *-test functions.
 any_failed=0
 for test in $(compgen -A function); do
