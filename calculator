@@ -4,3 +4,10 @@ add() {
 
   return $((left + right))
 }
+
+subtract() {
+  local left="$1"
+  local right="$2"
+
+  return $((left - right))
+}
