@@ -1,0 +1,6 @@
+add() {
+  local left="$1"
+  local right="$2"
+
+  return $((left + right))
+}
